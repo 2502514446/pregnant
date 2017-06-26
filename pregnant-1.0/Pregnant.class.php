@@ -75,18 +75,6 @@ public function display($file) {
   // 设置模板缓存文件路径
   $cacheFile = $this->cache_Dir . '/' . $file . '.html';
 
-  if($this->caching) {
-    ob_start();
-    if(file_exists($cacheFile) && file_exists($tplCompileFile)) {
-      if(filemtime($tplCompileFile)>=filemtime($tplFile)
-          && filemtime($cacheFile)>=filemtime($tplCompileFile)) {
-        //include($cacheFile);
-        $this->url($cacheFile);
-        return 1;
-      }
-    }
-  }
-
   if(!file_exists($tplCompileFile) || filemtime($tplFile)>filemtime($tplCompileFile)) {
     if(!$contentT = file_get_contents($tplFile)) {
       exit('ERROR : 模板内容获取错误！请查看模板文件是否可读！');
@@ -107,6 +95,34 @@ public function display($file) {
     file_put_contents($cacheFile, $content);
     ob_end_clean();
     include($cacheFile);
+  }
+}
+
+/**
+  * 功能： 缓冲 
+ *
+  * function :  public cache()
+  * return :    void  
+  * parameter : null
+***/
+public function cache($file) {
+  //设置模板文件路径
+  $tplFile = $this->tpl_Dir . '/' . $file;
+  // 设置模板编译文件路径
+  $tplCompileFile = $this->tplCompile_Dir . '/' . $file . '.php';
+  // 设置模板缓存文件路径
+  $cacheFile = $this->cache_Dir . '/' . $file . '.html';
+
+  if($this->caching) {
+    ob_start();
+    if(file_exists($cacheFile) && file_exists($tplCompileFile)) {
+      if(filemtime($tplCompileFile)>=filemtime($tplFile)
+          && filemtime($cacheFile)>=filemtime($tplCompileFile)) {
+        //include($cacheFile);
+        $this->url($cacheFile);
+        return 1;
+      }
+    }
   }
 }
 
@@ -136,8 +152,6 @@ public function checkDir() {
   * parameter : $url  地址
 ***/
 private function url($url) {
-  //$html = "<html><head><meta http-equir=\"refresh\" content=\"1;url=http://{$url}\"></head></html>";
-  //echo $html; 
   header("Location:{$url}");
   exit();
 }

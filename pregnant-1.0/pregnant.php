@@ -2,6 +2,7 @@
 require_once('./Pregnant.class.php');
 $pregnant = new Pregnant();
 $pregnant->caching = 1;
+$pregnant->cache('index.tpl');
 $pregnant->assign('webname', '51dream');
 $pregnant->assign('name', 'lijie');
 $pregnant->assign('sex', '男');
